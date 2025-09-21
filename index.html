@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <style>
+    .subjects-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px 14px;
+    max-width: 340px;
+    margin: 20px auto 40px auto;
+}
+
+.subject-btn {
+    display: block;
+    text-align: center;
+    padding: 10px 0;
+    font-weight: 600;
+    font-size: 0.95em;
+    border-radius: 12px;
+    text-decoration: none;
+    color: #fff;
+    background: linear-gradient(135deg, #a259c6 0%, #6d28d9 100%);
+    box-shadow: 0 2px 8px rgba(108,52,131,0.15);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.subject-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(108,52,131,0.25);
+}
+    
+        .quiz-difficulty {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 8px;
+            justify-content: center;
+        }
+        .quiz-difficulty-btn {
+            background: #ede9f7;
+            color: #6d28d9;
+            border: 1px solid #a259c6;
+            border-radius: 6px;
+            padding: 2px 10px;
+            font-size: 0.8em;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .quiz-difficulty-btn.selected, .quiz-difficulty-btn:active {
+            background: linear-gradient(135deg, #a259c6 0%, #6d28d9 100%);
+            color: #fff;
+            border: 1px solid #6d28d9;
+        }
+        /* Minigame Verdadeiro ou Falso */
+        .quiz-container {
+            margin: 20px auto 0 auto;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 2px 8px rgba(108,52,131,0.08);
+            max-width: 340px;
+            width: 100%;
+            padding: 14px 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+        .quiz-title {
+            font-size: 1em;
+            font-weight: 700;
+            color: #6d28d9;
+            margin-bottom: 4px;
+        }
+        .quiz-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 3px solid #a259c6;
+    margin-bottom: 10px;
+    background: #fff;
+    object-fit: cover;
+}
+        }
+        .quiz-score {
+            font-size: 0.9em;
+            color: #a259c6;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .quiz-question {
+            font-size: 0.9em;
+            color: #333;
+            margin-bottom: 12px;
+            text-align: center;
+            min-height: 36px;
+        }
+        .quiz-btns {
+            display: flex;
+            gap: 14px;
+        }
+        .quiz-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #fff;
+            background: linear-gradient(135deg, #a259c6 0%, #6d28d9 100%);
+            box-shadow: 0 2px 6px rgba(108,52,131,0.08);
+            cursor: pointer;
+        }
+        .quiz-feedback {
+            margin-top: 6px;
+            font-size: 0.85em;
+            font-weight: 600;
+            color: #6d28d9;
+            min-height: 18px;
+        }
+        /* Menu lateral */
+        .menu-btn {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            border: 1px solid #a259c6;
+            border-radius: 8px;
+            padding: 4px 6px;
+        }
+        .menu-btn span {
+            width: 20px;
+            height: 3px;
+            margin: 2px 0;
+            background: #a259c6;
+            border-radius: 2px;
+        }
+        .side-menu {
+            max-width: 260px;
+            font-size: 0.9em;
+        }
+        .side-menu h2 {
+            font-size: 1.2em;
+        }
+        .side-menu p {
+            font-size: 0.85em;
+        }
+        /* Chat */
+        .chat-container {
+            max-width: 340px;
+            margin-top: 24px;
+            border-radius: 16px;
+        }
+        .chat-header {
+            font-size: 1.1em;
+            padding: 14px 0;
+        }
+        .chat-messages {
+            height: 260px;
+            padding: 14px;
+        }
+        .message-content {
+            padding: 8px 12px;
+            border-radius: 12px 12px 4px 12px;
+            font-size: 0.85em;
+        }
+        .chat-input input[type="text"] {
+            padding: 10px;
+            font-size: 0.85em;
+        }
+        .chat-input button {
+            padding: 0 18px;
+            font-size: 0.85em;
+        }
+    </style>
+</head>
+<body>
+<style>
+         .menu-btn {
+            position: absolute;
+            top: 18px;
+            left: 18px;
+            z-index: 10;
+            background: #fff;
+            border: 2px solid #a259c6;
+            box-shadow: 0 2px 8px rgba(108,52,131,0.13);
+            border-radius: 12px;
+            cursor: pointer;
+            padding: 8px 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 1;
+            transition: box-shadow 0.2s, border 0.2s;
+        }
+        .menu-btn:hover {
+            box-shadow: 0 4px 16px rgba(108,52,131,0.22);
+            border: 2px solid #6d28d9;
+        }
+        .menu-btn span {
+            display: block;
+            width: 28px;
+            height: 4px;
+            margin: 3px 0;
+            background: #a259c6;
+            border-radius: 2px;
+            transition: 0.3s;
+            opacity: 1;
+        }
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 0;
+            max-width: 340px;
+            background: linear-gradient(135deg, #a259c6 0%, #6d28d9 100%);
+            color: #fff;
+            z-index: 100;
+            overflow-x: hidden;
+            transition: width 0.35s cubic-bezier(.77,0,.18,1);
+            box-shadow: 2px 0 16px 0 rgba(108,52,131,0.13);
+            padding: 0;
+        }
+        .side-menu.open {
+            width: 50vw;
+            min-width: 220px;
+            max-width: 340px;
+        }
+        .side-menu-content {
+            padding: 36px 28px 28px 28px;
+        }
+        .side-menu h2 {
+            margin-top: 0;
+            font-size: 1.5em;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+        .side-menu p {
+            font-size: 1.08em;
+            line-height: 1.6;
+            margin-bottom: 0;
+        }
+        .side-menu .close-btn {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 2em;
+            cursor: pointer;
+        }
+        /* Bolhas animadas no fundo */
+        .bubbles-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .chat-container, .config {
+            position: relative;
+            z-index: 2;
+        }
+        .bubble {
+            position: absolute;
+            bottom: -120px;
+            border-radius: 50%;
+            opacity: 0.22;
+            background: linear-gradient(135deg, #a259c6 60%, #6d28d9 100%);
+            animation: bubbleUp 12s linear infinite;
+        }
+        @keyframes bubbleUp {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 0.22;
+            }
+            80% {
+                opacity: 0.22;
+            }
+            100% {
+                transform: translateY(-110vh) scale(1.1);
+                opacity: 0;
+            }
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ana Inteligente - AI</title>
+    <style>
+        /* Animação de texto crescendo (typewriter) */
+        .typewriter {
+            display: inline-block;
+            white-space: pre-wrap;
+            overflow-wrap: break-word;
+        }
+        /* Animação de reticências pulando */
+        .typing-indicator {
+            display: inline-block;
+            height: 1em;
+            vertical-align: middle;
+        }
+        .typing-dot {
+            display: inline-block;
+            width: 0.32em;
+            height: 0.32em;
+            margin: 0 0.08em;
+            background: #a259c6;
+            border-radius: 50%;
+            opacity: 0.7;
+            animation: bounce 1.2s infinite both;
+        }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes bounce {
+            0%, 80%, 100% { transform: translateY(0); opacity: 0.7; }
+            40% { transform: translateY(-0.4em); opacity: 1; }
+        }
+        </style>
+        <style>
+        body {
+            font-family: 'Nunito', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #a259c6 0%, #6d28d9 100%);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .chat-container {
+            background: #fff;
+            border-radius: 24px;
+            box-shadow: 0 4px 24px rgba(108, 52, 131, 0.15);
+            width: 100%;
+            max-width: 420px;
+            margin-top: 48px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 3px solid #a259c6;
+        }
+        .chat-header {
+            background: linear-gradient(90deg, #a259c6 0%, #6d28d9 100%);
+            color: #fff;
+            padding: 22px 0 18px 0;
+            font-size: 1.5em;
+            text-align: center;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+        .chat-messages {
+            flex: 1;
+            padding: 24px 18px 18px 18px;
+            overflow-y: auto;
+            height: 380px;
+            background: #f6f2fa;
+        }
+        .message {
+            margin-bottom: 18px;
+            display: flex;
+            flex-direction: column;
+        }
+        .message.user {
+            align-items: flex-end;
+        }
+        .message.bot {
+            align-items: flex-start;
+        }
+        .message-content {
+            padding: 14px 18px;
+            border-radius: 20px 20px 4px 20px;
+            max-width: 85%;
+            font-size: 1.08em;
+            box-shadow: 0 2px 8px rgba(162, 89, 198, 0.07);
+            font-weight: 500;
+        }
+        .message.user .message-content {
+            background: linear-gradient(90deg, #a259c6 0%, #6d28d9 100%);
+            color: #fff;
+            border-bottom-right-radius: 4px;
+            border-bottom-left-radius: 20px;
+        }
+        .message.bot .message-content {
+            background: #ede9f7;
+            color: #6d28d9;
+            border-bottom-left-radius: 4px;
+            border-bottom-right-radius: 20px;
+        }
+        .chat-input {
+            display: flex;
+            border-top: 2px solid #ede9f7;
+            background: #faf6ff;
+        }
+        .chat-input input[type="text"] {
+            flex: 1;
+            border: none;
+            padding: 18px;
+            font-size: 1.08em;
+            border-radius: 0;
+            outline: none;
+            background: transparent;
+            font-family: 'Nunito', 'Arial', sans-serif;
+        }
+        .chat-input button {
+            background: linear-gradient(90deg, #a259c6 0%, #6d28d9 100%);
+            color: #fff;
+            border: none;
+            padding: 0 32px;
+            cursor: pointer;
+            font-size: 1.08em;
+            font-weight: 700;
+            border-radius: 0 0 20px 0;
+            transition: background 0.2s;
+        }
+        .chat-input button:hover {
+            background: linear-gradient(90deg, #6d28d9 0%, #a259c6 100%);
+        }
+        /* Esconde a config */
+        .config { display: none; }
+    </style>
+</head>
+<body>
+    <div class="chat-container" id="chatContainer">
+        <div class="chat-header">Ana Inteligente
+            <button id="resetChat" title="Resetar conversa" style="float:right;background:transparent;border:none;color:#fff;font-size:0.9em;cursor:pointer;padding:0 10px 0 0;">⟳ Resetar</button>
+        </div>
+        <div class="chat-messages" id="chatMessages"></div>
+        <form class="chat-input" id="chatForm">
+            <input type="text" id="userInput" placeholder="Digite sua mensagem..." autocomplete="off" required />
+            <button type="submit">Enviar</button>
+        </form>
+    </div>
+    <div class="quiz-container" id="quizContainer">
+        <div class="quiz-title">Nerd dos Pontos</div>
+        <img class="quiz-avatar" src="nerd.png" alt="Nerd dos Pontos">
+        <div class="quiz-score" id="quizScore">Pontos: 0</div>
+        <div class="quiz-difficulty" id="quizDifficulty">
+            <button class="quiz-difficulty-btn selected" data-diff="facil">Fácil</button>
+            <button class="quiz-difficulty-btn" data-diff="medio">Médio</button>
+            <button class="quiz-difficulty-btn" data-diff="dificil">Difícil</button>
+        </div>
+        <div class="quiz-question" id="quizQuestion">Carregando pergunta...</div>
+        <div class="quiz-btns">
+            <button class="quiz-btn" id="btnTrue" title="Verdadeiro">O</button>
+            <button class="quiz-btn" id="btnFalse" title="Falso">X</button>
+        </div>
+        <div class="quiz-feedback" id="quizFeedback"></div>
+    </div>
+    <button class="menu-btn" id="menuBtn" title="Abrir menu" aria-label="Abrir menu">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+    <!-- Caixa de matérias -->
+<div class="subjects-container">
+    <a href="https://www.google.com" class="subject-btn">Português</a>
+    <a href="https://www.google.com" class="subject-btn">Matemática</a>
+    <a href="https://www.google.com" class="subject-btn">Química</a>
+    <a href="https://www.google.com" class="subject-btn">Biologia</a>
+    <a href="https://www.google.com" class="subject-btn">Inglês</a>
+    <a href="https://www.google.com" class="subject-btn">História</a>
+    <a href="https://www.google.com" class="subject-btn">Ed. Física</a>
+    <a href="https://www.google.com" class="subject-btn">Geografia</a>
+</div>
+    
+    <nav class="side-menu" id="sideMenu">
+        <button class="close-btn" id="closeMenuBtn" title="Fechar menu" aria-label="Fechar menu">&times;</button>
+        <div class="side-menu-content">
+            <h2>Sobre o Chatbot</h2>
+            <p>
+                Este chatbot foi criado para ajudar você a tirar dúvidas, gerar ideias, responder perguntas e auxiliar em tarefas do dia a dia usando inteligência artificial. <br><br>
+                Use-o para:<br>
+                • Obter explicações rápidas<br>
+                • Praticar conversação<br>
+                • Receber sugestões criativas<br>
+                • Apoio em estudos e trabalho<br><br>
+                <b>Ana Inteligente</b> está sempre pronta para ajudar!
+            </p>
+        </div>
+    </nav>
+    <div class="bubbles-bg" id="bubblesBg"></div>
+    <!-- Configuração oculta no JS -->
+    <script>
+        // Minigame Verdadeiro ou Falso
+        // Perguntas separadas por dificuldade
+        const quizQuestions = {
+            facil: [
+                { q: 'A água ferve a 100°C ao nível do mar.', a: true },
+                { q: 'O Sol é um planeta.', a: false },
+                { q: 'A capital do Brasil é Brasília.', a: true },
+                { q: 'Python é uma linguagem de programação.', a: true },
+                { q: 'O ser humano tem 5 corações.', a: false },
+                { q: 'A Terra é o terceiro planeta do Sistema Solar.', a: true },
+                { q: 'O símbolo químico do ouro é Au.', a: true },
+                { q: 'O Brasil faz fronteira com o Canadá.', a: false },
+                { q: 'A fotossíntese ocorre nas folhas das plantas.', a: true },
+                { q: 'O céu é azul.', a: true },
+            ],
+            medio: [
+                { q: 'A baleia-azul é o maior animal do mundo.', a: true },
+                { q: 'O número pi é aproximadamente 3,14.', a: true },
+                { q: 'O átomo é composto apenas de prótons.', a: false },
+                { q: 'A Antártida é um deserto.', a: true },
+                { q: 'O Brasil já sediou uma Copa do Mundo.', a: true },
+                { q: 'A luz viaja mais rápido que o som.', a: true },
+                { q: 'O DNA é encontrado apenas em animais.', a: false },
+                { q: 'O Monte Fuji fica na China.', a: false },
+                { q: 'O oceano Atlântico é o maior do mundo.', a: false },
+                { q: 'O ser humano tem 206 ossos.', a: true },
+            ],
+            dificil: [
+                { q: 'A constante de Planck é aproximadamente 6,63 x 10^-34 J·s.', a: true },
+                { q: 'A Guerra dos Cem Anos durou exatamente 100 anos.', a: false },
+                { q: 'O elemento químico de número atômico 79 é o ouro.', a: true },
+                { q: 'A capital da Mongólia é Ulan Bator.', a: true },
+                { q: 'A unidade de medida Tesla é usada para campo magnético.', a: true },
+                { q: 'O maior deserto do mundo é o Saara.', a: false },
+                { q: 'A proteína hemoglobina transporta oxigênio no sangue.', a: true },
+                { q: 'O número de Euler é aproximadamente 2,71.', a: true },
+                { q: 'A teoria da relatividade foi proposta por Isaac Newton.', a: false },
+                { q: 'O rio Nilo é o mais extenso do mundo.', a: false },
+            ]
+        };
+        let quizScore = 0;
+        let quizIndex = 0;
+        let quizLevel = 'facil';
+        const quizScoreEl = document.getElementById('quizScore');
+        const quizQuestionEl = document.getElementById('quizQuestion');
+        const quizFeedbackEl = document.getElementById('quizFeedback');
+        const btnTrue = document.getElementById('btnTrue');
+        const btnFalse = document.getElementById('btnFalse');
+        const quizDifficultyEl = document.getElementById('quizDifficulty');
+        const quizDiffBtns = quizDifficultyEl.querySelectorAll('.quiz-difficulty-btn');
+
+        function showQuizQuestion() {
+            quizFeedbackEl.textContent = '';
+            const questions = quizQuestions[quizLevel];
+            if (quizIndex >= questions.length) {
+                quizQuestionEl.textContent = 'Fim do jogo! Parabéns!';
+                btnTrue.disabled = true;
+                btnFalse.disabled = true;
+                return;
+            }
+            quizQuestionEl.textContent = questions[quizIndex].q;
+        }
+
+        function handleQuizAnswer(isTrue) {
+            const questions = quizQuestions[quizLevel];
+            const correct = questions[quizIndex].a === isTrue;
+            let points = 0;
+            if (quizLevel === 'facil') points = 5;
+            if (quizLevel === 'medio') points = 10;
+            if (quizLevel === 'dificil') points = 15;
+            if (correct) {
+                quizScore += points;
+                quizFeedbackEl.textContent = 'Acertou! (+' + points + ')';
+            } else {
+                quizScore -= 5;
+                quizFeedbackEl.textContent = 'Errou! (-5)';
+            }
+            quizScoreEl.textContent = `Pontos: ${quizScore}`;
+            quizIndex++;
+            setTimeout(showQuizQuestion, 900);
+        }
+
+        btnTrue.addEventListener('click', () => handleQuizAnswer(true));
+        btnFalse.addEventListener('click', () => handleQuizAnswer(false));
+
+        quizDiffBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                quizDiffBtns.forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                quizLevel = btn.getAttribute('data-diff');
+                quizIndex = 0;
+                quizScore = 0;
+                btnTrue.disabled = false;
+                btnFalse.disabled = false;
+                quizScoreEl.textContent = 'Pontos: 0';
+                showQuizQuestion();
+            });
+        });
+
+        showQuizQuestion();
+        // Menu lateral
+        const menuBtn = document.getElementById('menuBtn');
+        const sideMenu = document.getElementById('sideMenu');
+        const closeMenuBtn = document.getElementById('closeMenuBtn');
+        menuBtn.addEventListener('click', () => {
+            sideMenu.classList.add('open');
+        });
+        closeMenuBtn.addEventListener('click', () => {
+            sideMenu.classList.remove('open');
+        });
+        // Fecha menu ao clicar fora
+        window.addEventListener('click', (e) => {
+            if (sideMenu.classList.contains('open') && !sideMenu.contains(e.target) && e.target !== menuBtn && !menuBtn.contains(e.target)) {
+                sideMenu.classList.remove('open');
+            }
+        });
+        // Cria bolhas animadas no fundo
+        function createBubbles() {
+            const bubblesBg = document.getElementById('bubblesBg');
+            const bubbleCount = 18;
+            for (let i = 0; i < bubbleCount; i++) {
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble';
+                const size = Math.random() * 48 + 32; // 32px a 80px
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                bubble.style.left = `${Math.random() * 100}%`;
+                bubble.style.animationDuration = `${9 + Math.random() * 6}s`;
+                bubble.style.animationDelay = `${Math.random() * 8}s`;
+                bubblesBg.appendChild(bubble);
+            }
+        }
+        createBubbles();
+    const chatMessages = document.getElementById('chatMessages');
+    const chatForm = document.getElementById('chatForm');
+    const userInput = document.getElementById('userInput');
+    const resetBtn = document.getElementById('resetChat');
+        // Botão para resetar o chat
+        resetBtn.addEventListener('click', () => {
+            messages = [];
+            chatMessages.innerHTML = '';
+        });
+    // Chave e URL fixas (não visíveis na tela)
+    const apiKey = "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";
+    const apiUrl = "https://openrouter.ai/api/v1/chat/completions";
+
+        let messages = [];
+
+        function addMessage(role, content) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            if (role === 'user') {
+                contentDiv.classList.add('typewriter');
+                typeWriterEffect(contentDiv, content);
+            } else {
+                contentDiv.textContent = content;
+            }
+            messageDiv.appendChild(contentDiv);
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Efeito typewriter para mensagem do usuário
+        function typeWriterEffect(element, text, speed = 18) {
+            let i = 0;
+            function type() {
+                if (i <= text.length) {
+                    element.textContent = text.slice(0, i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            type();
+        }
+
+
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const userMsg = userInput.value.trim();
+            if (!userMsg) return;
+            addMessage('user', userMsg);
+            messages.push({ role: 'user', content: userMsg });
+            userInput.value = '';
+            addTypingIndicator();
+            await sendMessageToAPI();
+        });
+
+        function addTypingIndicator() {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message bot typing';
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            contentDiv.innerHTML = '<span class="typing-indicator"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></span>';
+            messageDiv.appendChild(contentDiv);
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const typing = chatMessages.querySelector('.message.bot.typing');
+            if (typing) typing.remove();
+        }
+
+        async function sendMessageToAPI() {
+    try {
+        const response = await fetch("/chat", { // chama o endpoint Flask
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: messages })
+        });
+
+        if (!response.ok) throw new Error('Erro na resposta do servidor');
+        const data = await response.json();
+        const botMsg = data.choices?.[0]?.message?.content || 'Sem resposta da IA.';
+        messages.push({ role: 'assistant', content: botMsg });
+        removeTypingIndicator();
+        addMessage('bot', botMsg);
+
+    } catch (err) {
+        removeTypingIndicator();
+        addMessage('bot', 'Erro: ' + err.message);
+    }
+}
+
+                if (!response.ok) {
+                    throw new Error('Erro na resposta da API');
+                }
+                const data = await response.json();
+                const botMsg = data.choices?.[0]?.message?.content || 'Sem resposta da IA.';
+                messages.push({ role: 'assistant', content: botMsg });
+                removeTypingIndicator();
+                addMessage('bot', botMsg);
+            } catch (err) {
+                removeTypingIndicator();
+                addMessage('bot', 'Erro: ' + err.message);
+            }
+        }
+        
+        // Não é mais necessário updateLastBotMessage, pois agora a mensagem é adicionada após a animação
+    </script>
+</body>
+</html>
