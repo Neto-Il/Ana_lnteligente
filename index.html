@@ -686,25 +686,24 @@
             if (typing) typing.remove();
         }
 
-        async function sendMessageToAPI() {
+ async function sendMessageToAPI() {
     try {
-        const response = await fetch("/chat", { // chama o endpoint Flask
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: messages })
+        const response = await fetch("/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: userMsg })
         });
-
-        if (!response.ok) throw new Error('Erro na resposta do servidor');
         const data = await response.json();
         const botMsg = data.choices?.[0]?.message?.content || 'Sem resposta da IA.';
         messages.push({ role: 'assistant', content: botMsg });
         removeTypingIndicator();
         addMessage('bot', botMsg);
-
     } catch (err) {
         removeTypingIndicator();
         addMessage('bot', 'Erro: ' + err.message);
     }
+}
+
 }
 
                 if (!response.ok) {
